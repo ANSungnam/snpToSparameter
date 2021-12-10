@@ -4,8 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.stream.IntStream;
 
-public class SortTxtArray {
+public class SortTxtArrayStream {
 	String[] txtArray = null;
 	
 	// sort() is applied to any combination of String and Number.
@@ -121,49 +122,51 @@ public class SortTxtArray {
 	
 	// sortIndexSub is used to sort String, but it is not effective for mixed-String-Number.
 	public Integer[] sortIndexSub(String[] txtArray) {
-		Integer[] indexStr= new Integer[txtArray.length];
-		for (int i = 0; i < txtArray.length; i++)
-        {
-        	indexStr[i] = i;
-        }		
-		Comparator<Integer> txtArrayIndexComparatorInstance = new Comparator<Integer>() {   
-		    @Override
-		    public int compare(Integer index1, Integer index2) {
-		        return txtArray[index1].compareTo(txtArray[index2]);
-		    }
-		};
-		Arrays.sort(indexStr,  txtArrayIndexComparatorInstance); // This sort is different from method sort of SortTxtArray.
+		Integer[] indexStr= Arrays.stream(IntStream.range(0, txtArray.length).toArray()).boxed().toArray(Integer[]::new);
+	    Comparator<Integer> txtArrayIndexComparatorInstance = (x1, x2) -> txtArray[x1].compareTo(txtArray[x2]);		
+//		for (int i = 0; i < txtArray.length; i++)
+//        {
+//        	indexStr[i] = i;
+//        }		  
+//		Comparator<Integer> txtArrayIndexComparatorInstance = new Comparator<Integer>() {   
+//	    @Override
+//	    public int compare(Integer index1, Integer index2) {
+//	        return txtArray[index1].compareTo(txtArray[index2]);
+//	    }};
+	    Arrays.sort(indexStr,  txtArrayIndexComparatorInstance); // This sort is different from method sort of SortTxtArray.
 		return indexStr;
 	}
 	
 	public Integer[] sortIndexSub(Double[] txtArray) {
-		Integer[] indexStr= new Integer[txtArray.length];
-		for (int i = 0; i < txtArray.length; i++)
-        {
-        	indexStr[i] = i;
-        }		
-		Comparator<Integer> txtArrayIndexComparatorInstance = new Comparator<Integer>() {   
-		    @Override
-		    public int compare(Integer index1, Integer index2) {
-		        return txtArray[index1].compareTo(txtArray[index2]);
-		    }
-		};
+		Integer[] indexStr= Arrays.stream(IntStream.range(0, txtArray.length).toArray()).boxed().toArray(Integer[]::new);
+	    Comparator<Integer> txtArrayIndexComparatorInstance = (x1, x2) -> txtArray[x1].compareTo(txtArray[x2]);	
+//		for (int i = 0; i < txtArray.length; i++)
+//        {
+//        	indexStr[i] = i;
+//        }		
+//		Comparator<Integer> txtArrayIndexComparatorInstance = new Comparator<Integer>() {   
+//		    @Override
+//		    public int compare(Integer index1, Integer index2) {
+//		        return txtArray[index1].compareTo(txtArray[index2]);
+//		    }
+//		};		
 		Arrays.sort(indexStr,  txtArrayIndexComparatorInstance); // This sort is different from method sort of SortTxtArray.
 		return indexStr;
 	}
 	
 	public Integer[] sortIndexSub(Integer[] txtArray) {
-		Integer[] indexStr= new Integer[txtArray.length];
-		for (int i = 0; i < txtArray.length; i++)
-        {
-        	indexStr[i] = i;
-        }		
-		Comparator<Integer> txtArrayIndexComparatorInstance = new Comparator<Integer>() {   
-		    @Override
-		    public int compare(Integer index1, Integer index2) {
-		        return txtArray[index1].compareTo(txtArray[index2]);
-		    }
-		};
+		Integer[] indexStr= Arrays.stream(IntStream.range(0, txtArray.length).toArray()).boxed().toArray(Integer[]::new);
+	    Comparator<Integer> txtArrayIndexComparatorInstance = (x1, x2) -> txtArray[x1].compareTo(txtArray[x2]);	
+//		for (int i = 0; i < txtArray.length; i++)
+//        {
+//        	indexStr[i] = i;
+//        }		
+//		Comparator<Integer> txtArrayIndexComparatorInstance = new Comparator<Integer>() {   
+//		    @Override
+//		    public int compare(Integer index1, Integer index2) {
+//		        return txtArray[index1].compareTo(txtArray[index2]);
+//		    }
+//		};
 		Arrays.sort(indexStr,  txtArrayIndexComparatorInstance); // This sort is different from method sort of SortTxtArray.
 		return indexStr;
 	}	
