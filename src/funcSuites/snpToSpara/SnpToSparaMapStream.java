@@ -32,28 +32,29 @@
 
 package funcSuites.snpToSpara;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
-import funcSuites.sortTxtArray.SortTxtArray;
+import funcSuites.sortTxtArray.SortTxtArrayStream;
 
-public class SnpToSparaMap {
-	public SortTxtArray sortTxt = new SortTxtArray();    // Sort Array
+public class SnpToSparaMapStream {
+	public SortTxtArrayStream sortTxt = new SortTxtArrayStream();    // Sort Array
 	public final String snpFolder;
 	public final Integer[] pathTreeSize;
 	private Integer[] snpPath;
 	
-	private ArrayList<ArrayList<Double>> snpToData;
-	public ArrayList<Double> freq;	
+	private List<ArrayList<Double>> snpToData;
+	public List<Double> freq;	
 	
-	public SnpToSparaMap(String snpFolder) {
+	public SnpToSparaMapStream(String snpFolder) {
 		this.snpFolder = snpFolder;
 		this.pathTreeSize = this.pathTreeInit();
 		System.out.println("* The pathTreeSize of the " + this.getClass().getSimpleName() + " object is " +  Arrays.toString(pathTreeSize) + ".");
@@ -64,65 +65,43 @@ public class SnpToSparaMap {
 	// 폴더의 계층이 어떤지 확인
 	private Integer[] pathTreeInit() {
 		// ** Folder tree of samples
-		File pathTmp0 = new File(snpFolder);
-		List<Integer> pathList = new ArrayList<Integer>();
-		
-		while (pathTmp0.exists()) {
-			File[] listTmp0 = pathTmp0.listFiles();
-			int count0 = 0;
-			int count1 = 0;
-			for (int i0 = 0; i0 < listTmp0.length; i0++) {
-				if (listTmp0[i0].isDirectory()) {
-					count0++;
-				} else if (listTmp0[i0].isFile()) {
-					count1++;
-				}
+		List<Integer> pathList = new ArrayList<Integer>();    	
+		String pathReference = this.snpFolder;
+		Path path = Paths.get(pathReference);	
+		int pathTreePosition;
+		try {
+			for (pathTreePosition=0; Files.walk(path, pathTreePosition+1).count()>Files.walk(path, pathTreePosition).count(); pathTreePosition++) {
+				File[] fileList = new File(pathReference).listFiles();			
+				List<String> pathString = Arrays.stream(fileList).map(x->x.getPath()).collect(Collectors.toList());
+				pathReference = pathString.get(0);
+				pathList.add(pathString.size());
 			}
-			if (count0 > 0) {
-				pathList.add(count0);
-				File pathTmp1 = new File(listTmp0[0].getPath());
-				pathTmp0 = pathTmp1;
-			} else if (count1 > 0) {
-				pathList.add(count1);
-				break;
-			} else {
-				break;
-			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}		
 		return pathList.toArray(new Integer[0]);
 	}
 
-	public String[] pathTree(Integer... arr) {
-		String snpFolderTmp = this.snpFolder;
-		File fileList = new File(snpFolderTmp);	
-				
-		ArrayList<String> pathNameList = new ArrayList<>();
-		
-		int setInput = 0;		
-		while (fileList.isDirectory()) {
-			String[] pathTmp = new String[ fileList.listFiles().length];
-			String[] folderTmp = new String[ fileList.listFiles().length];
-			for (int i = 0; i < fileList.listFiles().length; i++)
-	        {
-	        	pathTmp[i] = fileList.listFiles()[i].getPath();
-	        	folderTmp[i] = fileList.listFiles()[i].getName();
-	        }
-			String[] sortedPathTmp = sortTxt.sort(pathTmp);
-			String[] sortedFolderTmp = sortTxt.sort(folderTmp);
-			
-			if(arr[setInput] == -1) {
-				pathNameList.clear();
-				for(String f: sortedFolderTmp){
-					pathNameList.add(f);
+	public String[] pathTree(Integer... pathTreeIndex) {		
+		List<String> pathNameList = new ArrayList<>();    	
+    	String pathReference = this.snpFolder;
+		Path path = Paths.get(pathReference);
+		try {
+			for (int pathTreeSearch=0; Files.walk(path, pathTreeSearch+1).count()>Files.walk(path, pathTreeSearch).count(); pathTreeSearch++) {
+				File[] fileList = new File(pathReference).listFiles();
+				List<String> pathNameString = sortTxt.sort(Arrays.stream(fileList).map(x->x.getName()).collect(Collectors.toList()));
+				List<String> pathString = sortTxt.sort(Arrays.stream(fileList).map(x->x.getPath()).collect(Collectors.toList()));
+
+				if(pathTreeIndex[pathTreeSearch]<0) {
+					return pathNameString.toArray(new String[0]);	
+				} else {
+					pathReference = pathString.get(pathTreeIndex[pathTreeSearch]);
+					pathNameList.add(pathNameString.get(pathTreeIndex[pathTreeSearch]));				
 				}
-				return pathNameList.toArray(new String[0]);				
-			} else {
-				snpFolderTmp = sortedPathTmp[arr[setInput]];
-				pathNameList.add(sortedFolderTmp[arr[setInput]]);
-				fileList = new File(snpFolderTmp);
-				setInput++;
 			}
-		}		
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return pathNameList.toArray(new String[0]);
 	}
 	
@@ -137,52 +116,43 @@ public class SnpToSparaMap {
 	}
 	
 	// snp 파일에서 주석을 제거하고 data만 추출
-	private ArrayList<ArrayList<Double>> snpToDataInit() {
-		String snpFolderTmp = snpFolder;
-		File fileList = new File(snpFolderTmp);			
-		
-		int setInput = 0;		
-		
-		while (fileList.isDirectory()) {
-			String[] pathTmp = new String[ fileList.listFiles().length];
-			for (int i = 0; i < fileList.listFiles().length; i++)
-	        {
-	        	pathTmp[i] = fileList.listFiles()[i].getPath();
-	        }
-			String[] sortedPathTmp = sortTxt.sort(pathTmp);
-			
-			snpFolderTmp = sortedPathTmp[snpPath[setInput]];
-			fileList = new File(snpFolderTmp);
-			setInput++;
-		}
-		
-		String line = "";    // 데이터를 한 라인씩 읽는다.
-		String[] lineArray;
-		ArrayList<ArrayList<Double>> listRawData = new ArrayList<>();
-		BufferedReader br;
+	private List<ArrayList<Double>> snpToDataInit() {    	
+		List<ArrayList<Double>> listRawData = new ArrayList<ArrayList<Double>>();
+    	String pathReference = this.snpFolder;
+		Path path = Paths.get(pathReference);	
+
 		try {
-			br = new BufferedReader(new FileReader(snpFolderTmp));	
-			while ((line = br.readLine()) != null) {
-				Character char1st = Character.valueOf(line.charAt(0)); 
-				if (!char1st.equals('!') && !char1st.equals('#')) {
-					listRawData.add(new ArrayList<Double>());
-					lineArray = line.split("\t");
-					for (int i=0; i<lineArray.length; i++) {
-						listRawData.get(listRawData.size()-1).add(Double.parseDouble(lineArray[i]));
-					}
+			for (int pathTreePosition=0; Files.walk(path, pathTreePosition+1).count()>Files.walk(path, pathTreePosition).count(); pathTreePosition++) {
+				File[] fileList = new File(pathReference).listFiles();			
+				List<String> pathString = sortTxt.sort(
+						Arrays.stream(fileList).map(x->x.getPath()).collect(Collectors.toList()));
+				pathReference = pathString.get(snpPath[pathTreePosition]);	
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			List<String> strRawData;		
+			strRawData = Files.lines(Paths.get(pathReference))
+				.filter(x->!Character.valueOf(x.charAt(0)).equals('!') && !Character.valueOf(x.charAt(0)).equals('#'))
+				.collect(Collectors.toList());
+			
+			for (int i=0; i<strRawData.size(); i++) {
+				String[] lineArray =strRawData.get(i).split("\t");
+				listRawData.add(new ArrayList<Double>());
+				for (int j=0; j<lineArray.length; j++) {
+					listRawData.get(listRawData.size()-1).add(Double.parseDouble(lineArray[j]));
 				}
 			}
-			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return listRawData;
 	}
-
 	
 	// 데이터 구조에서 포트 개수를 확인
 	public int portNum() {
-		ArrayList<ArrayList<Double>> RawData = this.snpToData;	
+		List<ArrayList<Double>> RawData = this.snpToData;	
 		int portNumber = 0;
 		if ((RawData.get(0).size() == 9) && (Double.toString(RawData.get(1).get(0)).length() != 0)) {
 			portNumber = 2;
@@ -193,12 +163,12 @@ public class SnpToSparaMap {
 		}
 		return portNumber;
 	}
-	
+
 	// 주파수 추출
-	private ArrayList<Double> freqInit() {
-		ArrayList<ArrayList<Double>> RawData = this.snpToData;	
+	private List<Double> freqInit() {
+		List<ArrayList<Double>> RawData = this.snpToData;	
 		int portNum = this.portNum();
-		ArrayList<Double> freqList = new ArrayList<>();
+		List<Double> freqList = new ArrayList<>();
 		
 		if (portNum == 2) {
 			for (int i = 0; i < RawData.size(); i++) {
@@ -218,9 +188,9 @@ public class SnpToSparaMap {
 	
 	// dB값 추출
 	public TreeMap<Double, Double> dB(int numOutput, int numInput) {		
-		ArrayList<ArrayList<Double>> RawData = this.snpToData;	
+		List<ArrayList<Double>> RawData = this.snpToData;	
 		int portNum = this.portNum();
-		ArrayList<Double> dBList = new ArrayList<>();
+		List<Double> dBList = new ArrayList<>();
 		
 		if (portNum == 2) {
 			for (int i = 0; i < RawData.size(); i++) {
@@ -264,9 +234,9 @@ public class SnpToSparaMap {
 	
 	// S parameter의  angle 추출
 	public TreeMap<Double, Double> angle(int numOutput, int numInput) {		
-		ArrayList<ArrayList<Double>> RawData = this.snpToData;	
+		List<ArrayList<Double>> RawData = this.snpToData;	
 		int portNum = this.portNum();
-		ArrayList<Double> angleList = new ArrayList<>();
+		List<Double> angleList = new ArrayList<>();
 		
 		if (portNum == 2) {
 			for (int i = 0; i < RawData.size(); i++) {
