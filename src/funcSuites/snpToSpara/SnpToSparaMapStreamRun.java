@@ -3,15 +3,15 @@ package funcSuites.snpToSpara;
 import java.io.IOException;
 import java.util.Arrays;
 
-public class SnpToSparaMapExample {
+public class SnpToSparaMapStreamRun {
 	
 	public static void main(String[] args) throws IOException {
 
 		final String splPath ="D:\\Data\\InBand_s2p";  // snp 파일을 포함하는 최상위 폴더
 
-		SnpToSparaMap spl1 = new SnpToSparaMap(splPath);  // S parameter 추출을 위한 객체 생성		
+		SnpToSparaMapStream spl1 = new SnpToSparaMapStream(splPath);  // S parameter 추출을 위한 객체 생성		
 		
-		spl1.setSnpPath(0,0,0);    // 폴더 및 파일의 경로 설정 (선택한 경로가 파일이면 이 설정은 무시된다.)
+		spl1.setSnpPath(1,1,20);    // 폴더 및 파일의 경로 설정 (선택한 경로가 파일이면 이 설정은 무시된다.)
 		
 		
 		System.out.println(""); 
