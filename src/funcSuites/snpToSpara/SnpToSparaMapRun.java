@@ -6,6 +6,7 @@ import java.util.Arrays;
 public class SnpToSparaMapRun {
 	
 	public static void main(String[] args) throws IOException {
+		long beforeTime = System.currentTimeMillis();
 
 		final String splPath ="D:\\Data\\InBand_s2p";  // snp 파일을 포함하는 최상위 폴더
 
@@ -82,5 +83,9 @@ public class SnpToSparaMapRun {
 //		System.out.println(freq[2]);
 //		System.out.println(freq[3]);	
 //		System.out.println(freq.length);
+		
+		long afterTime = System.currentTimeMillis(); 
+		long secDiffTime = (afterTime - beforeTime);
+		System.out.println("시간차이(m) : "+secDiffTime);
 	}
 }
