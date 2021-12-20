@@ -43,6 +43,11 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import funcSuites.sortTxtArray.SortTxtArray;
+import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Series;
 
 public class SnpToSparaMap {
 	public SortTxtArray sortTxt = new SortTxtArray();    // Sort Array
@@ -69,21 +74,21 @@ public class SnpToSparaMap {
 		
 		while (pathTmp0.exists()) {
 			File[] listTmp0 = pathTmp0.listFiles();
-			int count0 = 0;
-			int count1 = 0;
+			int countFolder = 0;
+			int countFile = 0;
 			for (int i0 = 0; i0 < listTmp0.length; i0++) {
 				if (listTmp0[i0].isDirectory()) {
-					count0++;
+					countFolder++;
 				} else if (listTmp0[i0].isFile()) {
-					count1++;
+					countFile++;
 				}
 			}
-			if (count0 > 0) {
-				pathList.add(count0);
+			if (countFolder > 0) {
+				pathList.add(countFolder);
 				File pathTmp1 = new File(listTmp0[0].getPath());
 				pathTmp0 = pathTmp1;
-			} else if (count1 > 0) {
-				pathList.add(count1);
+			} else if (countFile > 0) {
+				pathList.add(countFile);
 				break;
 			} else {
 				break;
@@ -307,4 +312,58 @@ public class SnpToSparaMap {
 		}
 		return angleMap;
 	}
+	
+	public Scene plotdB(List<String> titlePlotSeries, Map<Double, Double>... mapSeries) {	
+	// Chart Outline Set - lineChart is root container	
+	        final NumberAxis xAxis = new NumberAxis();
+	        xAxis.setLabel("Frequency");
+	        xAxis.setAutoRanging(true);
+	        
+	        final NumberAxis yAxis = new NumberAxis();
+	        yAxis.setLabel("Magnitude [dB]");
+	        
+	        final LineChart<Number,Number> lineChart = new LineChart<>(xAxis,yAxis);
+	        lineChart.setTitle("The Magnitude of S parameter");
+
+	// Plot Import
+	        for(int i=0; i<mapSeries.length; i++) {
+				Series<Number, Number> series = new XYChart.Series<>();
+				series.setName(titlePlotSeries.get(i));
+				for (Map.Entry<Double, Double> keys : mapSeries[i].entrySet()) {
+					series.getData().add(new XYChart.Data<>(keys.getKey(), keys.getValue()));   
+				}	
+				lineChart.getData().add(series);
+	        }
+	        
+	// Plots to chart outline
+	        Scene scene  = new Scene(lineChart,800,600); 
+	        return scene;
+		}
+	
+	public Scene plotAngle(List<String> titlePlotSeries, Map<Double, Double>... mapSeries) {	
+		// Chart Outline Set - lineChart is root container	
+		        final NumberAxis xAxis = new NumberAxis();
+		        xAxis.setLabel("Frequency");
+		        xAxis.setAutoRanging(true);
+		        
+		        final NumberAxis yAxis = new NumberAxis();
+		        yAxis.setLabel("Angle [Degree]");
+		        
+		        final LineChart<Number,Number> lineChart = new LineChart<>(xAxis,yAxis);
+		        lineChart.setTitle("The Angle of S parameter");
+
+		// Plot Import
+		        for(int i=0; i<mapSeries.length; i++) {
+					Series<Number, Number> series = new XYChart.Series<>();
+					series.setName(titlePlotSeries.get(i));
+					for (Map.Entry<Double, Double> keys : mapSeries[i].entrySet()) {
+						series.getData().add(new XYChart.Data<>(keys.getKey(), keys.getValue()));   
+					}	
+					lineChart.getData().add(series);
+		        }
+		        
+		// Plots to chart outline
+		        Scene scene  = new Scene(lineChart,800,600); 
+		        return scene;
+			}
 }
