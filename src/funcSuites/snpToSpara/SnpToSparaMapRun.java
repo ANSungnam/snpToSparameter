@@ -95,5 +95,5 @@ public class SnpToSparaMapRun extends Application {
 		stage.setTitle("Line Chart Sample");
 //		stage.setScene(spl1.plotAngle(xAxisRange, yAxisRange, seriesName, angle11, angle21));
         stage.show();
-	}
+	} 
 }

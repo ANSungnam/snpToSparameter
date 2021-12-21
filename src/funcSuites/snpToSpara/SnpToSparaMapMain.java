@@ -54,6 +54,8 @@ public class SnpToSparaMapMain extends Application {
 
 // Window Set
 		stage.setTitle("Line Chart Sample");
+//		stage.setScene(spl1.plotdB(titlePlotSeries, specLine, dB11, dB21));
+//		stage.setScene(spl1.plotAngle(titlePlotSeries, angle11, angle21));
 		stage.setScene(scene);
         stage.show();
 	}

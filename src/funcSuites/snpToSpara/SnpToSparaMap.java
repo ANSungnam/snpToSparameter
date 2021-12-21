@@ -378,6 +378,6 @@ public class SnpToSparaMap {
         }
         
 // Plots to chart outline
-        return lineChart;
+        return lineChart; 
 	}
 }
