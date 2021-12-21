@@ -50,28 +50,44 @@ public class SnpToSparaMapRun extends Application {
 		
 		spl1.setSnpPath(0,0,0);    // 폴더 및 파일의 경로 설정 (선택한 경로가 파일이면 이 설정은 무시된다.)
 		
-		Map<Double, Double> dB11 = spl1.dB(1,1);
-		Map<Double, Double> dB21 = spl1.dB(2,1);
+		TreeMap<Double, Double> dB11 = spl1.dB(1,1);
+		TreeMap<Double, Double> dB21 = spl1.dB(2,1);
 		
-		Map<Double, Double> angle11 = spl1.angle(1,1);
-		Map<Double, Double> angle21 = spl1.angle(2,1);
+		TreeMap<Double, Double> angle11 = spl1.angle(1,1);
+		TreeMap<Double, Double> angle21 = spl1.angle(2,1);
 		
-		Map<Double, Double> specLine = new TreeMap<>();
+		TreeMap<Double, Double> specLine = new TreeMap<>();
 		Double specLineValue = -13.0;
 		for (int i=3500; i<=3700; i++) {
 			specLine.put(i*1e6,  specLineValue);   
 		}
         
-       List<String> titlePlotSeries = List.of(
-        		"Spec Line",
-        		"spl1 S11",
-        		"spl1 S21"
+       List<Double> xAxisRange = List.of( // autoRange_true(not 0.0)_false(0.0), freqStart, freqEnd, tickUnit
+    		10.0,		// autoRange: ~0.0, manualRange: 0.0
+    		dB11.firstEntry().getKey()-0.1e9,
+//    		specLine.firstEntry().getKey()-0.25e9,
+    		dB11.lastEntry().getKey()+0.1e9,
+//    		specLine.lastEntry().getKey()+0.25e9,
+    		0.2e9
         );
+       
+       List<Double> yAxisRange = List.of( // autoRange_true(not 0.0)_false(0.0), min, max, tickUnit
+    		10.0,		// autoRange: ~0.0, manualRange: 0.0
+       		-50.0,		
+       		5.0,
+       		10.0
+       );
+       
+       List<String> seriesName = List.of(
+       		"Spec Line",
+       		"spl1 S11",
+       		"spl1 S21"
+       );
 
 // Window Set
 		stage.setTitle("Line Chart Sample");
-//		stage.setScene(spl1.plotdB(titlePlotSeries, specLine, dB11, dB21));
-		stage.setScene(spl1.plotAngle(titlePlotSeries, angle11, angle21));
+		stage.setScene(spl1.plotdB(xAxisRange, yAxisRange, seriesName, specLine, dB11, dB21));
+//		stage.setScene(spl1.plotAngle(xAxisRange, yAxisRange, seriesName, angle11, angle21));
         stage.show();
 	}
 }
