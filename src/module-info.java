@@ -4,5 +4,7 @@ module Y21W475D1126 {
 	requires javafx.graphics;
 	requires javafx.controls;
 	requires javafx.base;
-	requires jcommon;
+	requires javafx.fxml;
+	
+	opens funcSuites.snpToSpara to javafx.graphics, javafx.fxml;
 }

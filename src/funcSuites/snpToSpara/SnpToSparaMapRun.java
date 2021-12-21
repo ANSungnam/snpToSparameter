@@ -3,10 +3,11 @@ package funcSuites.snpToSpara;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
 import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
 import javafx.stage.Stage;
 
 public class SnpToSparaMapRun extends Application {
@@ -84,10 +85,15 @@ public class SnpToSparaMapRun extends Application {
        		"spl1 S21"
        );
 
-// Window Set
+// Window Set	
+       
+       // public LineChart<Number, Number> plotdB(List<Double> xAxisRange, List<Double> yAxisRange, List<String> seriesName, TreeMap<Double, Double>... mapSeries) {
+       // public LineChart<Number, Number> plotAngle(List<Double> xAxisRange, List<Double> yAxisRange, List<String> seriesName, TreeMap<Double, Double>... mapSeries) {
+		LineChart<Number, Number> lineChart = spl1.plotdB(xAxisRange, yAxisRange, seriesName, dB11, dB21, specLine);
+		Scene scene  = new Scene(lineChart, 800, 600); 
+		stage.setScene(scene);
 		stage.setTitle("Line Chart Sample");
-		stage.setScene(spl1.plotdB(xAxisRange, yAxisRange, seriesName, specLine, dB11, dB21));
 //		stage.setScene(spl1.plotAngle(xAxisRange, yAxisRange, seriesName, angle11, angle21));
         stage.show();
-	}
+	} 
 }
