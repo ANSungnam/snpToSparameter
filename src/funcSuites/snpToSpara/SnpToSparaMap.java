@@ -313,7 +313,7 @@ public class SnpToSparaMap {
 		return angleMap;
 	}
 	
-	public Scene plotdB(List<Double> xAxisRange, List<Double> yAxisRange, List<String> seriesName, TreeMap<Double, Double>... mapSeries) {	
+	public LineChart<Number, Number> plotdB(List<Double> xAxisRange, List<Double> yAxisRange, List<String> seriesName, TreeMap<Double, Double>... mapSeries) {	
 // Chart Outline Set - lineChart is root container			
 		final NumberAxis xAxis;
 	    final NumberAxis yAxis;	    
@@ -344,11 +344,10 @@ public class SnpToSparaMap {
         }
         
 // Plots to chart outline
-        Scene scene  = new Scene(lineChart,800,600); 
-        return scene;
+        return lineChart;
 	}
 	
-	public Scene plotAngle(List<Double> xAxisRange, List<Double> yAxisRange, List<String> seriesName, TreeMap<Double, Double>... mapSeries) {	
+	public LineChart<Number, Number> plotAngle(List<Double> xAxisRange, List<Double> yAxisRange, List<String> seriesName, TreeMap<Double, Double>... mapSeries) {	
 // Chart Outline Set - lineChart is root container	
 		final NumberAxis xAxis;
 	    final NumberAxis yAxis;	    
@@ -379,7 +378,6 @@ public class SnpToSparaMap {
         }
         
 // Plots to chart outline
-        Scene scene  = new Scene(lineChart,800,600); 
-        return scene;
+        return lineChart;
 	}
 }
